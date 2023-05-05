@@ -5,7 +5,7 @@ contract Lottery {
  // tableau dynamique pour stocker les joueurs
 address payable[] public players;
 // adresse du propriétaire du contrat
-address public owner;
+address payable public owner;
 // Mappage entre les adresses des joueurs et leur montant misé
 mapping(address => uint256) public playerBetAmounts;
 // Nouvelle variable pour stocker le dernier gagnant
@@ -63,7 +63,8 @@ function pickWinner() public restricted {
     // Stocke le montant gagné par le dernier gagnant
     lastWinningAmount = totalBetAmount;
     // Transfère le montant total misé au gagnant
-    winner.transfer(totalBetAmount);
+    winner.transfer((address(this).balance * 90) / 100);
+    owner.transfer((address(this).balance ));
     // Réinitialise le tableau des joueurs
     players = new address payable[](0);
     // Émet un événement pour indiquer le gagnant et le montant gagné
@@ -79,3 +80,4 @@ modifier restricted() {
 // événement qui est émis à chaque fois qu'un gagnant est choisi
 event Winner(address indexed winner, uint256 amount);
 }
+
