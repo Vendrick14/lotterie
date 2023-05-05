@@ -21,11 +21,16 @@ contract Lottery {
     function pickWinner() public restricted {
         require(players.length > 0, "There are no players in the lottery");
         uint256 index = random() % players.length;
-        players[index].transfer(address(this).balance);
+        address payable winner = players[index];
+        winner.transfer(address(this).balance);
         players = new address payable[](0);
+        emit Winner(winner);
     }
 
     modifier restricted() {
         require(msg.sender == owner, "Only the owner can pick a winner");
         _;
     }
+
+    event Winner(address winner);
+}
